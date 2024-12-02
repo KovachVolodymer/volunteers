@@ -2,9 +2,13 @@ package org.example.volunteerback.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -13,7 +17,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fullName", nullable = false)
+    @Column(name = "fullName")
     private String fullName;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -28,7 +32,15 @@ public class User {
     @Column(name = "photo")
     private String photo;
 
-    public User(){};
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
+
+    public User() {}
 
     public User(String email, String password) {
         this.email = email;

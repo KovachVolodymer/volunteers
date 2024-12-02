@@ -1,5 +1,6 @@
 package org.example.volunteerback.service;
 
+import org.example.volunteerback.dto.request.LoginRequest;
 import org.example.volunteerback.dto.request.RegisterRequest;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.model.User;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class AuthService {
@@ -36,5 +38,7 @@ public class AuthService {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Successful registration"));
     }
+
+
 
 }
