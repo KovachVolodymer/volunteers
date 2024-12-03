@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,9 +34,10 @@ public class AuthService {
     public ResponseEntity<Object> register(RegisterRequest request){
         if(userRepository.existsByEmail(request.email()))
         {
-            return ResponseEntity.badRequest().body(new MessageResponse("Email exists"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email exists"));
         }
         User user = new User(
+                request.fullName(),
                 request.email(),
                 passwordEncoder.encode(request.password())
         );
