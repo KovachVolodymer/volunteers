@@ -1,7 +1,8 @@
 package org.example.volunteerback.dto.request;
 
 public record RegisterRequest(
-        String fullName,
+        String firstName,
+        String lastName,
         String email,
         String password
 ) {

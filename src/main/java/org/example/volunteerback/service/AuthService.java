@@ -1,6 +1,5 @@
 package org.example.volunteerback.service;
 
-import org.example.volunteerback.dto.request.LoginRequest;
 import org.example.volunteerback.dto.request.RegisterRequest;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.model.Role;
@@ -37,7 +36,8 @@ public class AuthService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email exists"));
         }
         User user = new User(
-                request.fullName(),
+                request.firstName(),
+                request.lastName(),
                 request.email(),
                 passwordEncoder.encode(request.password())
         );
