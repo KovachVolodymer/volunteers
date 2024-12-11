@@ -3,7 +3,7 @@ package org.example.volunteerback.service;
 import org.example.volunteerback.dto.request.RegisterRequest;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.model.Role;
-import org.example.volunteerback.model.User;
+import org.example.volunteerback.model.user.User;
 import org.example.volunteerback.repository.RoleRepository;
 import org.example.volunteerback.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

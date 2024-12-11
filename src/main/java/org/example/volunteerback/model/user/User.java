@@ -1,8 +1,9 @@
-package org.example.volunteerback.model;
+package org.example.volunteerback.model.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.volunteerback.model.Role;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,10 +18,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "firstName")
+    @Column(name = "firstName", nullable = false)
     private String firstName;
 
-    @Column(name = "lastName")
+    @Column(name = "lastName", nullable = false)
     private String lastName;
 
     @Column(name = "email", nullable = false, unique = true)

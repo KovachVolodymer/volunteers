@@ -1,7 +1,6 @@
 package org.example.volunteerback.model.user;
 
 import lombok.Getter;
-import org.example.volunteerback.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
