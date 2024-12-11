@@ -1,24 +1,17 @@
 package org.example.volunteerback.config.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.example.volunteerback.model.user.User;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.example.volunteerback.model.user.UserDetailsImpl;
-import org.example.volunteerback.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Date;
 
-
+@Slf4j
 @Service
 public class JwtUtils{
 
@@ -39,7 +32,6 @@ public class JwtUtils{
         this.keyLoader = keyLoader;
     }
 
-
     public String generateJwtToken(Authentication authentication) throws Exception {
 
         PrivateKey privateKey = keyLoader.loadPrivateKey(jwtPrivateSecret);
@@ -58,6 +50,18 @@ public class JwtUtils{
                 .compact();
     }
 
+    public String getUserNameFromJwtToken(String token) throws Exception {
+        PublicKey publicKey = keyLoader.loadPublicKey(jwtPublicSecret);
+
+        return Jwts.parserBuilder()
+                .setSigningKey(publicKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+
     public boolean validateJwt(String token) throws Exception {
         PublicKey publicKey = keyLoader.loadPublicKey(jwtPublicSecret);
 
@@ -67,9 +71,16 @@ public class JwtUtils{
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
-            return false;
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty: {}", e.getMessage());
         }
+        return false;
     }
 
 
