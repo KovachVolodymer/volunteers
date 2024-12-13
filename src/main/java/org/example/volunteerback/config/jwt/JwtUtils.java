@@ -18,10 +18,15 @@ public class JwtUtils{
     @Value("${jwt.private.secret}")
     private String jwtPrivateSecret;
 
-    private final String jwtPublicSecret =  "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBRzCZYB4AG9AXjVqe6KYjA/LLLpta\n" +
-            "BmvN1K2sdL7J9vLIW6f6r0E/Fy+gcg2OhdHEmTRk2YSWlp7Xj51QzsQY4aUA3bae\n" +
-            "FikxNcpxXEGV7PDcHl5nee0mZ+JHLCLiQp2hFN3sdSZ0j6BxXMenVQukHIRsVd//\n" +
-            "oV/axqmfVJSLCiuuXgc=";
+    private final String jwtPublicSecret =  "-----BEGIN PUBLIC KEY-----\n" +
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0oR0SOEfADn4jTvhw+2+\n" +
+            "ijgnecYzqizXuM6DlkCUTrDYIr2ou9hE585duJnzImA3GtBNBr7f80lnoUNkaBcE\n" +
+            "QwAFwBE319KilfYU7xqmqH3k1Dfbaze+JB1T3zn+/eMNf1MOzVQ55XbmJOc7yH9T\n" +
+            "ZEdoTC+RLioYR/lW1LMUuhYFsvXH44E1WBQrcrOkml+r25u0mmMrFyqagFWlOyLz\n" +
+            "DnfkdoC7tZkRrDUa2bX7bNGYNHXED/bc9cCMD5q5aChS8MK0ToXGtxaIyP907Nbp\n" +
+            "CAY40pi4tWOSj1wGgjT17a7EGrhpdJCClpXVJ2Adm96cIG6zJOIbk4oH16EBBJSK\n" +
+            "TQIDAQAB\n" +
+            "-----END PUBLIC KEY-----";
 
     @Value("${kovach.app.jwtExpirationMs}")
     private Integer jwtExpirationMs;
