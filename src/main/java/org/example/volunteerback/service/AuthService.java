@@ -1,8 +1,7 @@
 package org.example.volunteerback.service;
 
 import org.example.volunteerback.config.jwt.JwtUtils;
-import org.example.volunteerback.dto.request.LoginRequest;
-import org.example.volunteerback.dto.request.RegisterRequest;
+import org.example.volunteerback.dto.UserDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.model.Role;
 import org.example.volunteerback.model.user.User;
@@ -43,7 +42,7 @@ public class AuthService {
         this.jwtUtils = jwtUtils;
     }
 
-    public ResponseEntity<Object> register(RegisterRequest request) throws Exception {
+    public ResponseEntity<Object> register(UserDTO request) throws Exception {
         if(userRepository.existsByEmail(request.email()))
         {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email exists"));
@@ -63,26 +62,24 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return setAuthentication(request.email(),
-                request.password(),"Register successful");
+        return setAuthentication(request,"Register successful");
     }
 
-    public ResponseEntity<Object> login(LoginRequest request) throws Exception {
+    public ResponseEntity<Object> login(UserDTO request) throws Exception {
         if (!userRepository.existsByEmail(request.email()) ) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Email or password is incorrect!"));
         }
 
-      return setAuthentication(request.email(),
-              request.password(),"Login successful");
+      return setAuthentication(request,"Login successful");
     }
 
-    private ResponseEntity<Object> setAuthentication (String email, String password, String message) throws Exception {
+    private ResponseEntity<Object> setAuthentication (UserDTO request, String message) throws Exception {
         Authentication authentication;
         try {
             authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    email, password
+                    request.email(), request.password()
             ));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
