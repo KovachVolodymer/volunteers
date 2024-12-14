@@ -1,7 +1,7 @@
 package org.example.volunteerback.service;
 
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.example.volunteerback.config.jwt.JwtUtils;
+import org.example.volunteerback.dto.request.LoginRequest;
 import org.example.volunteerback.dto.request.RegisterRequest;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.model.Role;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -62,24 +63,39 @@ public class AuthService {
 
         userRepository.save(user);
 
+        return setAuthentication(request.email(),
+                request.password(),"Register successful");
+    }
+
+    public ResponseEntity<Object> login(LoginRequest request) throws Exception {
+        if (!userRepository.existsByEmail(request.email()) ) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Email or password is incorrect!"));
+        }
+
+      return setAuthentication(request.email(),
+              request.password(),"Login successful");
+    }
+
+    private ResponseEntity<Object> setAuthentication (String email, String password, String message) throws Exception {
         Authentication authentication;
         try {
-             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    request.email(),request.password()
+            authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    email, password
             ));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new MessageResponse("Authentication failed: " + e.getMessage()));
+                    .body(new MessageResponse("Email or password is incorrect!"));
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
-                .body(new MessageResponse("Successful registration"));
+                .header(HttpHeaders.AUTHORIZATION, jwt)
+                .body(new MessageResponse(message));
     }
-
 
 
 }

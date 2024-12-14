@@ -1,12 +1,12 @@
 package org.example.volunteerback.controller;
 
+import org.example.volunteerback.dto.request.LoginRequest;
 import org.example.volunteerback.dto.request.RegisterRequest;
 import org.example.volunteerback.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/auth")
 public class AuthController {
@@ -22,4 +22,10 @@ public class AuthController {
     public ResponseEntity<Object> register(@RequestBody RegisterRequest request) throws Exception {
        return authService.register(request);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody LoginRequest request) throws Exception {
+        return authService.login(request);
+    }
+
 }
