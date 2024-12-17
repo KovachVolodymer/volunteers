@@ -1,12 +1,13 @@
 package org.example.volunteerback.controller;
 
+import jakarta.validation.Valid;
+import org.example.volunteerback.dto.UserAuthDTO;
+import org.example.volunteerback.dto.UserDTO;
 import org.example.volunteerback.model.user.UserDetailsImpl;
 import org.example.volunteerback.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/users")
@@ -19,8 +20,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<Object> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.getUser(userDetails.getId());
+    }
+
+    @PatchMapping
+    public ResponseEntity<Object> patchUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                            @RequestBody @Valid UserDTO userDTO) {
+        return userService.patchUser(userDetails.getId(), userDTO);
     }
 
 }

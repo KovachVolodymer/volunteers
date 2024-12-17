@@ -13,12 +13,12 @@ import java.util.Date;
 
 @Slf4j
 @Service
-public class JwtUtils{
+public class JwtUtils {
 
     @Value("${jwt.private.secret}")
     private String jwtPrivateSecret;
 
-    private final String jwtPublicSecret =  "-----BEGIN PUBLIC KEY-----\n" +
+    private final String jwtPublicSecret = "-----BEGIN PUBLIC KEY-----\n" +
             "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0oR0SOEfADn4jTvhw+2+\n" +
             "ijgnecYzqizXuM6DlkCUTrDYIr2ou9hE585duJnzImA3GtBNBr7f80lnoUNkaBcE\n" +
             "QwAFwBE319KilfYU7xqmqH3k1Dfbaze+JB1T3zn+/eMNf1MOzVQ55XbmJOc7yH9T\n" +
@@ -87,9 +87,6 @@ public class JwtUtils{
         }
         return false;
     }
-
-
-
 
 
 }

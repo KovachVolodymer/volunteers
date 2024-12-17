@@ -20,7 +20,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody @Valid UserAuthDTO userAuthDTO) throws Exception {
-       return authService.register(userAuthDTO);
+        return authService.register(userAuthDTO);
     }
 
     @PostMapping("/login")

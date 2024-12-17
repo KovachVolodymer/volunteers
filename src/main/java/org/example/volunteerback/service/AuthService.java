@@ -34,16 +34,15 @@ public class AuthService {
     @Autowired
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository,
                        AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
-        this.userRepository=userRepository;
-        this.passwordEncoder=passwordEncoder;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
     }
 
     public ResponseEntity<Object> register(UserAuthDTO request) throws Exception {
-        if(userRepository.existsByEmail(request.email()))
-        {
+        if (userRepository.existsByEmail(request.email())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email exists"));
         }
         User user = new User(
@@ -61,26 +60,26 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return setAuthentication(request,"Register successful");
+        return setAuthentication(request, "Register successful");
     }
 
     public ResponseEntity<Object> login(UserAuthDTO request) throws Exception {
-        if (!userRepository.existsByEmail(request.email()) ) {
+        if (!userRepository.existsByEmail(request.email())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Email or password is incorrect!"));
         }
 
-      return setAuthentication(request,"Login successful");
+        return setAuthentication(request, "Login successful");
     }
 
-    private ResponseEntity<Object> setAuthentication (UserAuthDTO request, String message) throws Exception {
+    private ResponseEntity<Object> setAuthentication(UserAuthDTO request, String message) throws Exception {
         Authentication authentication;
         try {
-            authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     request.email(), request.password()
             ));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse("Email or password is incorrect!"));
         }

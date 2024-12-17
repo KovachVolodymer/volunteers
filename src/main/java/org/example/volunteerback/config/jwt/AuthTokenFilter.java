@@ -31,19 +31,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwt(jwt)){
+            if (jwt != null && jwtUtils.validateJwt(jwt)) {
                 String userEmail = jwtUtils.getUserNameFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null,userDetails.getAuthorities()
+                        userDetails, null, userDetails.getAuthorities()
                 );
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Authentication failed: {} - {}", e.getClass().getSimpleName(), e.getMessage());
         }
 
@@ -51,11 +50,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request)
-    {
+    private String parseJwt(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
 
-        if (StringUtils.hasText(header) && header.startsWith("Bearer ")){
+        if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             return header.substring(7);
         }
         return null;

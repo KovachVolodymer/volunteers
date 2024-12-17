@@ -12,8 +12,7 @@ import java.util.Optional;
 public class TestController {
 
     @GetMapping
-    public Optional<Object> gets()
-    {
+    public Optional<Object> gets() {
         return Optional.of(new MessageResponse("Hello"));
     }
 

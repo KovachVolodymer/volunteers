@@ -18,14 +18,14 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+public class SecurityConfig {
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    AuthTokenFilter authTokenFilter(){
+    AuthTokenFilter authTokenFilter() {
         return new AuthTokenFilter();
     }
 
@@ -35,9 +35,9 @@ public class SecurityConfig{
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth->
+                .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .anyRequest().authenticated()
