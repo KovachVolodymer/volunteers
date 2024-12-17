@@ -1,7 +1,7 @@
 package org.example.volunteerback.service;
 
 import org.example.volunteerback.config.jwt.JwtUtils;
-import org.example.volunteerback.dto.UserDTO;
+import org.example.volunteerback.dto.UserAuthDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.model.Role;
 import org.example.volunteerback.model.user.User;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -42,7 +41,7 @@ public class AuthService {
         this.jwtUtils = jwtUtils;
     }
 
-    public ResponseEntity<Object> register(UserDTO request) throws Exception {
+    public ResponseEntity<Object> register(UserAuthDTO request) throws Exception {
         if(userRepository.existsByEmail(request.email()))
         {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email exists"));
@@ -65,7 +64,7 @@ public class AuthService {
         return setAuthentication(request,"Register successful");
     }
 
-    public ResponseEntity<Object> login(UserDTO request) throws Exception {
+    public ResponseEntity<Object> login(UserAuthDTO request) throws Exception {
         if (!userRepository.existsByEmail(request.email()) ) {
             return ResponseEntity
                     .badRequest()
@@ -75,7 +74,7 @@ public class AuthService {
       return setAuthentication(request,"Login successful");
     }
 
-    private ResponseEntity<Object> setAuthentication (UserDTO request, String message) throws Exception {
+    private ResponseEntity<Object> setAuthentication (UserAuthDTO request, String message) throws Exception {
         Authentication authentication;
         try {
             authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

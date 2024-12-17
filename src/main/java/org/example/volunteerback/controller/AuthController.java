@@ -1,7 +1,7 @@
 package org.example.volunteerback.controller;
 
 import jakarta.validation.Valid;
-import org.example.volunteerback.dto.UserDTO;
+import org.example.volunteerback.dto.UserAuthDTO;
 import org.example.volunteerback.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +19,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody @Valid UserDTO userDTO) throws Exception {
-       return authService.register(userDTO);
+    public ResponseEntity<Object> register(@RequestBody @Valid UserAuthDTO userAuthDTO) throws Exception {
+       return authService.register(userAuthDTO);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid UserDTO userDTO) throws Exception {
-        return authService.login(userDTO);
+    public ResponseEntity<Object> login(@RequestBody UserAuthDTO userAuthDTO) throws Exception {
+        return authService.login(userAuthDTO);
     }
 
 }
