@@ -30,4 +30,9 @@ public class UserController {
         return userService.patchUser(userDetails.getId(), userDTO);
     }
 
+    @DeleteMapping
+    private ResponseEntity<Object> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.deleteUser(userDetails.getId());
+    }
+
 }

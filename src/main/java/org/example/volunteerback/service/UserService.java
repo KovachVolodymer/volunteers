@@ -62,4 +62,11 @@ public class UserService {
         return ResponseEntity.ok(new MessageResponse("User updated successfully"));
     }
 
+    public ResponseEntity<Object> deleteUser(Long id)
+    {
+        userRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new MessageResponse("User delete successfully"));
+    }
+
 }
