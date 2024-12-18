@@ -28,17 +28,14 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository,
-                       AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
+        this.authenticationService = authenticationService;
     }
 
     public ResponseEntity<Object> register(UserAuthDTO request) throws Exception {
@@ -60,7 +57,10 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return setAuthentication(request, "Register successful");
+        String jwt = authenticationService.authenticateAndGenerateToken(request.email(), request.password());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header(HttpHeaders.AUTHORIZATION, jwt)
+                .body(new MessageResponse("Register successful"));
     }
 
     public ResponseEntity<Object> login(UserAuthDTO request) throws Exception {
@@ -70,26 +70,10 @@ public class AuthService {
                     .body(new MessageResponse("Email or password is incorrect!"));
         }
 
-        return setAuthentication(request, "Login successful");
-    }
-
-    private ResponseEntity<Object> setAuthentication(UserAuthDTO request, String message) throws Exception {
-        Authentication authentication;
-        try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    request.email(), request.password()
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new MessageResponse("Email or password is incorrect!"));
-        }
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
+        String jwt = authenticationService.authenticateAndGenerateToken(request.email(), request.password());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header(HttpHeaders.AUTHORIZATION, jwt)
-                .body(new MessageResponse(message));
+                .body(new MessageResponse("Login successful"));
     }
 
 

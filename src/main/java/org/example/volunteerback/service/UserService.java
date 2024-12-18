@@ -1,7 +1,6 @@
 package org.example.volunteerback.service;
 
 import jakarta.validation.Valid;
-import org.example.volunteerback.dto.UserAuthDTO;
 import org.example.volunteerback.dto.UserDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.mapper.UserMapper;
