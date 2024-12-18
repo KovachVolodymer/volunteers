@@ -92,7 +92,6 @@ class AuthServiceTest {
 
     @Test
     void register_EmailExists_Conflict() throws Exception {
-
         // Arrange
         UserAuthDTO request = new UserAuthDTO("John", "Doe", "test@example.com",
                 "password123",null,null);
@@ -104,6 +103,51 @@ class AuthServiceTest {
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals("Email exists", ((MessageResponse) Objects
                 .requireNonNull(response.getBody())).message());
+    }
+
+    @Test
+    void login_Success() throws Exception {
+        UserAuthDTO request = new UserAuthDTO(
+                null,null, "test@example.com",
+                "password123", null, null
+        );
+        when(userRepository.existsByEmail(request.email())).thenReturn(true);
+        when(authenticationService.authenticateAndGenerateToken(request.email(),request.password()))
+                .thenReturn("dummyJwtToken");
+
+        ResponseEntity<Object> response = authService.login(request);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("dummyJwtToken",response.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
+        assertEquals("Login successful", ((MessageResponse) Objects
+                .requireNonNull(response.getBody())).message());
+    }
+
+    @Test
+    void login_EmailOrPasswordIncorrect_BadRequest() throws Exception {
+        UserAuthDTO request = new UserAuthDTO(
+                null,null, "test@example.com",
+                "password123", null, null
+        );
+        when(userRepository.existsByEmail(request.email())).thenReturn(false);
+        ResponseEntity<Object> response = authService.login(request);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Email or password is incorrect!", ((MessageResponse) Objects
+                .requireNonNull(response.getBody())).message());
+    }
+
+    @Test
+    void login_AuthenticationFails_ThrowsException() throws Exception {
+        UserAuthDTO request = new UserAuthDTO(
+                null, null, "test@example.com",
+                "wrongpassword", null, null
+        );
+        when(userRepository.existsByEmail(request.email())).thenReturn(true);
+        when(authenticationService.authenticateAndGenerateToken(request.email(), request.password()))
+                .thenThrow(new RuntimeException("Authentication failed"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(request));
+        assertEquals("Authentication failed", exception.getMessage());
     }
 
 }
