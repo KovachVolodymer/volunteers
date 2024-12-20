@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 
 
 @RestController
@@ -28,6 +29,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody UserAuthDTO userAuthDTO) throws Exception {
         return authService.login(userAuthDTO);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Object> refresh(@RequestBody Map<String, String> requestBody) {
+        String refreshToken = requestBody.get("refreshToken");
+        return authService.refresh(refreshToken);
     }
 
 }

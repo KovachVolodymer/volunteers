@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
@@ -19,11 +21,18 @@ public class AuthenticationService {
         this.jwtUtils = jwtUtils;
     }
 
-    public String authenticateAndGenerateToken(String email, String password) throws Exception {
+    public Map<String, String> authenticateAndGenerateTokens(String email, String password) throws Exception {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtUtils.generateJwtToken(authentication);
+
+        String accessToken = jwtUtils.generateJwtToken(authentication);
+        String refreshToken = jwtUtils.generateRefreshToken(authentication);
+
+        return Map.of(
+                "accessToken", accessToken,
+                "refreshToken", refreshToken
+        );
     }
 }
 

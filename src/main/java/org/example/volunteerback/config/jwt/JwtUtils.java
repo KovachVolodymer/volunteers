@@ -31,6 +31,9 @@ public class JwtUtils {
     @Value("${kovach.app.jwtExpirationMs}")
     private Integer jwtExpirationMs;
 
+    @Value("${kovach.app.jwtRefreshExpirationMs}")
+    private Integer jwtRefreshExpirationMs;
+
     private final KeyLoader keyLoader;
 
     public JwtUtils(KeyLoader keyLoader) {
@@ -51,6 +54,19 @@ public class JwtUtils {
                 .setSubject(userPrincipal.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(privateKey, SignatureAlgorithm.RS512)
+                .compact();
+    }
+
+    public String generateRefreshToken(Authentication authentication) throws Exception {
+        PrivateKey privateKey = keyLoader.loadPrivateKey(jwtPrivateSecret);
+
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
+        return Jwts.builder()
+                .setSubject(userPrincipal.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtRefreshExpirationMs))
                 .signWith(privateKey, SignatureAlgorithm.RS512)
                 .compact();
     }

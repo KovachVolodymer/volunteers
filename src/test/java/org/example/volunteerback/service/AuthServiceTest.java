@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -63,15 +64,20 @@ class AuthServiceTest {
         savedUser.setRoles(Set.of(role));
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
-        when(authenticationService.authenticateAndGenerateToken(request.email(), request.password()))
-                .thenReturn("dummyJwtToken");
+        when(authenticationService.authenticateAndGenerateTokens(request.email(),request.password()))
+                .thenReturn(Map.of(
+                        "accessToken","dummyJwtToken",
+                        "refreshToken","dummyRefreshJwtToken"
+                ));
 
         // Act
         ResponseEntity<Object> response = authService.register(request);
 
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Register successful", ((MessageResponse) Objects.requireNonNull(response.getBody())).message());
+        assertEquals(Map.of(
+                "message", "Register successful",
+                "refreshToken", "dummyRefreshJwtToken"), response.getBody());
         assertEquals("dummyJwtToken", response.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
     }
 
@@ -112,14 +118,18 @@ class AuthServiceTest {
                 "password123", null, null
         );
         when(userRepository.existsByEmail(request.email())).thenReturn(true);
-        when(authenticationService.authenticateAndGenerateToken(request.email(),request.password()))
-                .thenReturn("dummyJwtToken");
+        when(authenticationService.authenticateAndGenerateTokens(request.email(),request.password()))
+                .thenReturn(Map.of(
+                        "accessToken","dummyJwtToken",
+                        "refreshToken","dummyRefreshJwtToken"
+                ));
 
         ResponseEntity<Object> response = authService.login(request);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("dummyJwtToken",response.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
-        assertEquals("Login successful", ((MessageResponse) Objects
-                .requireNonNull(response.getBody())).message());
+        assertEquals(Map.of(
+                "message", "Login successful",
+                "refreshToken", "dummyRefreshJwtToken"), response.getBody());
     }
 
     @Test
@@ -143,7 +153,7 @@ class AuthServiceTest {
                 "wrongPassword", null, null
         );
         when(userRepository.existsByEmail(request.email())).thenReturn(true);
-        when(authenticationService.authenticateAndGenerateToken(request.email(), request.password()))
+        when(authenticationService.authenticateAndGenerateTokens(request.email(), request.password()))
                 .thenThrow(new RuntimeException("Authentication failed"));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(request));
