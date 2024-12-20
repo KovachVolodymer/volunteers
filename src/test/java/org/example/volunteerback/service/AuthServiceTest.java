@@ -77,7 +77,7 @@ class AuthServiceTest {
 
 
     @Test
-    void register_RoleNotFound_Exception() throws Exception {
+    void register_RoleNotFound_Exception() {
         UserAuthDTO request = new UserAuthDTO(
                 "John", "Doe", "test@example.com",
                 "password123",null,null);
@@ -140,7 +140,7 @@ class AuthServiceTest {
     void login_AuthenticationFails_ThrowsException() throws Exception {
         UserAuthDTO request = new UserAuthDTO(
                 null, null, "test@example.com",
-                "wrongpassword", null, null
+                "wrongPassword", null, null
         );
         when(userRepository.existsByEmail(request.email())).thenReturn(true);
         when(authenticationService.authenticateAndGenerateToken(request.email(), request.password()))
