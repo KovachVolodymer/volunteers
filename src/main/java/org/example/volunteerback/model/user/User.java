@@ -3,6 +3,7 @@ package org.example.volunteerback.model.user;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.volunteerback.model.fee.Fee;
 import org.example.volunteerback.model.Role;
 
 import java.util.HashSet;
@@ -36,6 +37,9 @@ public class User {
     @Column(name = "photo")
     private String photo;
 
+    @Column(name= "phone")
+    private String phone;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -43,6 +47,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Fee> fees = new HashSet<>();
 
     public User() {
     }

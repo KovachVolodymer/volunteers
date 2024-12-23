@@ -22,16 +22,18 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    public final UserMapper userMapper;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder encoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder encoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.encoder = encoder;
+        this.userMapper = userMapper;
     }
 
     public ResponseEntity<Object> getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
-        UserDTO userDTO = user.map(UserMapper::toDTO)
+        UserDTO userDTO = user.map(userMapper::toDTO)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return ResponseEntity.ok(userDTO);
@@ -49,6 +51,7 @@ public class UserService {
         Optional.ofNullable(updateDTO.lastName()).ifPresent(user::setLastName);
         Optional.ofNullable(updateDTO.photo()).ifPresent(user::setPhoto);
         Optional.ofNullable(updateDTO.description()).ifPresent(user::setDescription);
+        Optional.ofNullable(updateDTO.phone()).ifPresent(user::setPhone);
         if (userRepository.existsByEmail(updateDTO.email())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email already in use"));
         }

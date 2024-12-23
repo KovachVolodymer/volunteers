@@ -21,6 +21,7 @@ public record UserDTO (
         @Size(min = 6, message = "The password must contain at least 6 characters")
         String password,
         String photo,
-        String description
+        String description,
+        String phone
 )
 {}
