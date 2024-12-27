@@ -24,4 +24,11 @@ public record UserAuthDTO(
         String description
 
 ) {
+        public UserAuthDTO(String firstName, String lastName, String email, String password) {
+                this(firstName, lastName, email, password, "", "");
+        }
+
+        public UserAuthDTO(String email, String password) {
+                this("", "", email, password, "", "");
+        }
 }

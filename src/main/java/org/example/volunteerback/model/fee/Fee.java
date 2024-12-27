@@ -29,5 +29,4 @@ public class Fee {
 
     private String description;
 
-
 }

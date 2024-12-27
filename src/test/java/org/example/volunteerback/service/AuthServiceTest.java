@@ -49,7 +49,7 @@ class AuthServiceTest {
         // Arrange
         UserAuthDTO request = new UserAuthDTO(
                 "John", "Doe", "test@example.com",
-                "password123", null, null
+                "password123"
         );
 
         when(userRepository.existsByEmail(request.email())).thenReturn(false);
@@ -86,7 +86,7 @@ class AuthServiceTest {
     void register_RoleNotFound_Exception() {
         UserAuthDTO request = new UserAuthDTO(
                 "John", "Doe", "test@example.com",
-                "password123",null,null);
+                "password123");
 
         when(userRepository.existsByEmail(request.email())).thenReturn(false);
 
@@ -100,7 +100,7 @@ class AuthServiceTest {
     void register_EmailExists_Conflict() throws Exception {
         // Arrange
         UserAuthDTO request = new UserAuthDTO("John", "Doe", "test@example.com",
-                "password123",null,null);
+                "password123");
         when(userRepository.existsByEmail(request.email())).thenReturn(true);
         // Act
         ResponseEntity<Object> response = authService.register(request);
@@ -114,8 +114,8 @@ class AuthServiceTest {
     @Test
     void login_Success() throws Exception {
         UserAuthDTO request = new UserAuthDTO(
-                null,null, "test@example.com",
-                "password123", null, null
+                 "test@example.com",
+                "password123"
         );
         when(userRepository.existsByEmail(request.email())).thenReturn(true);
         when(authenticationService.authenticateAndGenerateTokens(request.email(),request.password()))
@@ -135,9 +135,8 @@ class AuthServiceTest {
     @Test
     void login_EmailOrPasswordIncorrect_BadRequest() throws Exception {
         UserAuthDTO request = new UserAuthDTO(
-                null,null, "test@example.com",
-                "password123", null, null
-        );
+                 "test@example.com",
+                "password123");
         when(userRepository.existsByEmail(request.email())).thenReturn(false);
         ResponseEntity<Object> response = authService.login(request);
 
@@ -149,9 +148,8 @@ class AuthServiceTest {
     @Test
     void login_AuthenticationFails_ThrowsException() throws Exception {
         UserAuthDTO request = new UserAuthDTO(
-                null, null, "test@example.com",
-                "wrongPassword", null, null
-        );
+                 "test@example.com",
+                "wrongPassword");
         when(userRepository.existsByEmail(request.email())).thenReturn(true);
         when(authenticationService.authenticateAndGenerateTokens(request.email(), request.password()))
                 .thenThrow(new RuntimeException("Authentication failed"));

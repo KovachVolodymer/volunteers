@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -45,18 +46,26 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new MessageResponse("User not found"));
         }
-        User user = optionalUser.get();
 
+        User user = optionalUser.get();
         Optional.ofNullable(updateDTO.firstName()).ifPresent(user::setFirstName);
         Optional.ofNullable(updateDTO.lastName()).ifPresent(user::setLastName);
         Optional.ofNullable(updateDTO.photo()).ifPresent(user::setPhoto);
         Optional.ofNullable(updateDTO.description()).ifPresent(user::setDescription);
         Optional.ofNullable(updateDTO.phone()).ifPresent(user::setPhone);
-        if (userRepository.existsByEmail(updateDTO.email())) {
+        if (userRepository.existsByEmail(updateDTO.email()) && !Objects.equals(updateDTO.email(), user.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email already in use"));
         }
         Optional.ofNullable(updateDTO.email()).ifPresent(user::setEmail);
-        Optional.ofNullable(updateDTO.password()).ifPresent(p -> user.setPassword(encoder.encode(p)));
+
+
+        if (updateDTO.previousPassword() != null && (!encoder.matches(updateDTO.previousPassword(), user.getPassword()))) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new MessageResponse("Wrong password"));
+        }
+
+        Optional.ofNullable(updateDTO.password())
+                .ifPresent(newPassword -> user.setPassword(encoder.encode(newPassword)));
 
 
         userRepository.save(user);

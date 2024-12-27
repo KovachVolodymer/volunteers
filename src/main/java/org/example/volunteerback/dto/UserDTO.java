@@ -20,8 +20,13 @@ public record UserDTO (
                         " one lowercase letter and one number")
         @Size(min = 6, message = "The password must contain at least 6 characters")
         String password,
+        String previousPassword,
         String photo,
         String description,
         String phone
 )
-{}
+{
+        public UserDTO(String firstName, String lastName, String email, String password, String photo, String description, String phone) {
+                this(firstName, lastName, email, password, "", photo, description, phone);
+        }
+}
