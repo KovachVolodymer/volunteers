@@ -28,5 +28,6 @@ public class Fee {
     private Integer raised;
 
     private String description;
+    private Integer count;
 
 }

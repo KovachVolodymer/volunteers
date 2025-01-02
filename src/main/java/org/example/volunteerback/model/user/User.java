@@ -1,6 +1,7 @@
 package org.example.volunteerback.model.user;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.volunteerback.model.fee.Fee;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
 
