@@ -28,9 +28,9 @@ public class UserController {
                                             @RequestBody @Valid UserDTO userDTO) {
         return userService.patchUser(userDetails.getId(), userDTO);
     }
-
+    
     @DeleteMapping
-    private ResponseEntity<Object> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    private ResponseEntity<Object> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.deleteUser(userDetails.getId());
     }
 
