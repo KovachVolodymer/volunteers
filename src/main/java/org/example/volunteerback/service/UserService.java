@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import org.example.volunteerback.dto.UserDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.mapper.UserMapper;
+import org.example.volunteerback.model.Role;
 import org.example.volunteerback.model.user.User;
+import org.example.volunteerback.repository.RoleRepository;
 import org.example.volunteerback.repository.UserRepository;
 
 
@@ -15,8 +17,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -24,12 +28,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     public final UserMapper userMapper;
+    private final RoleRepository roleRepository;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder encoder, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder encoder, UserMapper userMapper, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.userMapper = userMapper;
+        this.roleRepository = roleRepository;
     }
 
     public ResponseEntity<Object> getUser(Long id) {
@@ -78,6 +84,18 @@ public class UserService {
         userRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new MessageResponse("User delete successfully"));
+    }
+
+    public ResponseEntity<Object> addRoleAdmin(Long id){
+      Optional<User> optionalUser =  userRepository.findById(id);
+      if (optionalUser.isPresent()){
+          User userData= optionalUser.get();
+          Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                  .orElseThrow(() -> new RuntimeException("Role ADMIN not found"));
+          userData.getRoles().add(adminRole);
+          userRepository.save(userData);
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Role add successfully"));
     }
 
 }
