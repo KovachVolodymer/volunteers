@@ -6,6 +6,7 @@ import org.example.volunteerback.repository.FeeRepository;
 import org.example.volunteerback.service.FeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class FeeController {
         return ResponseEntity.ok(feeService.getFeeById(id));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Object> postFee(@RequestBody Fee fee,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails){

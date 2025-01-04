@@ -2,10 +2,10 @@ package org.example.volunteerback.model.user;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 
 @Getter
@@ -30,7 +30,8 @@ public class UserDetailsImpl implements UserDetails {
 
     public static UserDetailsImpl build(User user) {
         Collection<? extends GrantedAuthority> authorities = user.getRoles()
-                .stream().map(role -> (GrantedAuthority) role)
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .toList();
 
         return new UserDetailsImpl(
@@ -45,7 +46,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return authorities;
     }
 
     @Override
