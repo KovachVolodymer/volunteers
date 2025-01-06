@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/fees")
 public class FeeController {
@@ -27,8 +29,24 @@ public class FeeController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Object> postFee(@RequestBody Fee fee,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return  feeService.postFee(fee, userDetails.getId());
+    public ResponseEntity<Object> postFee(@RequestBody Fee fee, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return feeService.postFee(fee, userDetails.getId());
     }
+
+    @GetMapping("/all")
+    public List<Fee> getAllFee(){
+      return feeService.getAllFee();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> patchFee (@PathVariable Long id,Fee updateFee){
+        return feeService.patchFee(id,updateFee);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteFee(@PathVariable Long id){
+        return feeService.deleteFee(id);
+    }
+
 }
