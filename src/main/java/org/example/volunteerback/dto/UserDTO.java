@@ -27,6 +27,10 @@ public record UserDTO (
 )
 {
         public UserDTO(String firstName, String lastName, String email, String password, String photo, String description, String phone) {
-                this(firstName, lastName, email, password, "", photo, description, phone);
+                this(firstName, lastName, email, password, null, photo, description, phone);
+        }
+
+        public UserDTO(String firstName, String lastName, String email) {
+                this(firstName, lastName, email, null, null, null, null, null);
         }
 }

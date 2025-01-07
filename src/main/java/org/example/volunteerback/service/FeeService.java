@@ -1,10 +1,13 @@
 package org.example.volunteerback.service;
 
+import org.example.volunteerback.dto.FeeDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
+import org.example.volunteerback.mapper.FeeMapper;
 import org.example.volunteerback.model.fee.Fee;
 import org.example.volunteerback.model.user.User;
 import org.example.volunteerback.repository.FeeRepository;
 import org.example.volunteerback.repository.UserRepository;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,10 +21,12 @@ public class FeeService {
 
     private final FeeRepository feeRepository;
     private final UserRepository userRepository;
+    private final FeeMapper feeMapper;
 
-    public FeeService(FeeRepository feeRepository, UserRepository userRepository) {
+    public FeeService(FeeRepository feeRepository, UserRepository userRepository, FeeMapper feeMapper) {
         this.feeRepository = feeRepository;
         this.userRepository = userRepository;
+        this.feeMapper = feeMapper;
     }
 
     public ResponseEntity<Object> postFee(Fee fee, Long id) {
@@ -32,15 +37,18 @@ public class FeeService {
                 .body(new MessageResponse("Fee created"));
     }
 
-    public Fee getFeeById(Long id) {
-        return feeRepository.findById(id)
+    public ResponseEntity<Object> getFeeById(Long id) {
+        Fee fee= feeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Fee not found with id: " + id));
+        FeeDTO feeDTO = feeMapper.feeDTO(fee);
+        return ResponseEntity.status(HttpStatus.OK).body(feeDTO);
     }
 
 
-    public List<Fee> getAllFee() {
-        return feeRepository.findAll();
-    }
+//    public List<Fee> getAllFee() {
+//
+//        return feeRepository.findAll();
+//    }
 
     public ResponseEntity<Object> deleteFee(Long id) {
         if (!feeRepository.existsById(id)) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.volunteerback.model.donation.Donation;
 import org.example.volunteerback.model.user.User;
 
 import java.util.ArrayList;
@@ -31,5 +32,9 @@ public class Fee {
 
     private String description;
     private Integer count;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "fee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Donation> donations = new ArrayList<>();
 
 }

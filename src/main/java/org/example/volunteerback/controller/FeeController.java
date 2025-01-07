@@ -23,8 +23,8 @@ public class FeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Fee> getFeeById(@PathVariable Long id) {
-        return ResponseEntity.ok(feeService.getFeeById(id));
+    public ResponseEntity<Object> getFeeById(@PathVariable Long id) {
+        return feeService.getFeeById(id);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
