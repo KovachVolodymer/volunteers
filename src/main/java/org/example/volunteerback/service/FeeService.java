@@ -7,7 +7,6 @@ import org.example.volunteerback.model.fee.Fee;
 import org.example.volunteerback.model.user.User;
 import org.example.volunteerback.repository.FeeRepository;
 import org.example.volunteerback.repository.UserRepository;
-import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,11 +43,12 @@ public class FeeService {
         return ResponseEntity.status(HttpStatus.OK).body(feeDTO);
     }
 
-
-//    public List<Fee> getAllFee() {
-//
-//        return feeRepository.findAll();
-//    }
+    public List<FeeDTO> getAllFee() {
+        List<Fee> fees = feeRepository.findAll();
+        return fees.stream()
+                .map(feeMapper::feeDTO)
+                .toList();
+    }
 
     public ResponseEntity<Object> deleteFee(Long id) {
         if (!feeRepository.existsById(id)) {
@@ -82,7 +82,7 @@ public class FeeService {
 
         feeRepository.save(fee);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Update success");
+        return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Update success"));
     }
 
 }

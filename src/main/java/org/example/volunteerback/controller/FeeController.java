@@ -1,5 +1,6 @@
 package org.example.volunteerback.controller;
 
+import org.example.volunteerback.dto.FeeDTO;
 import org.example.volunteerback.model.fee.Fee;
 import org.example.volunteerback.model.user.UserDetailsImpl;
 import org.example.volunteerback.service.FeeService;
@@ -34,12 +35,12 @@ public class FeeController {
     }
 
     @GetMapping("/all")
-    public List<Fee> getAllFee(){
+    public List<FeeDTO> getAllFee(){
       return feeService.getAllFee();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> patchFee (@PathVariable Long id,Fee updateFee){
+    public ResponseEntity<Object> patchFee (@PathVariable Long id,@RequestBody Fee updateFee){
         return feeService.patchFee(id,updateFee);
     }
 
