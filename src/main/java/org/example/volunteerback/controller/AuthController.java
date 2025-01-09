@@ -2,7 +2,7 @@ package org.example.volunteerback.controller;
 
 import jakarta.validation.Valid;
 import org.example.volunteerback.dto.UserAuthDTO;
-import org.example.volunteerback.service.AuthService;
+import org.example.volunteerback.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

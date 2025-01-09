@@ -1,4 +1,4 @@
-package org.example.volunteerback.service;
+package org.example.volunteerback.service.auth;
 
 import org.example.volunteerback.config.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;

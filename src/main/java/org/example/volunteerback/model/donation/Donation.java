@@ -1,8 +1,10 @@
 package org.example.volunteerback.model.donation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.volunteerback.dto.DonationDTO;
 import org.example.volunteerback.model.fee.Fee;
 import org.example.volunteerback.model.user.User;
 
@@ -30,6 +32,12 @@ public class Donation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public Donation(Fee fee, User user, Integer amount) {
+        this.fee = fee;
+        this.user = user;
+        this.amount = amount;
+    }
 
     @PrePersist
     protected void onCreate() {

@@ -6,6 +6,8 @@ import org.example.volunteerback.model.Role;
 import org.example.volunteerback.model.user.User;
 import org.example.volunteerback.repository.RoleRepository;
 import org.example.volunteerback.repository.UserRepository;
+import org.example.volunteerback.service.auth.AuthService;
+import org.example.volunteerback.service.auth.AuthenticationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
