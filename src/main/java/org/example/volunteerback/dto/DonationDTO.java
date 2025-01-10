@@ -1,6 +1,11 @@
 package org.example.volunteerback.dto;
 
+import java.time.LocalDateTime;
+
 public record DonationDTO(
-        Integer amount
-) {
-}
+        Long id,
+        Long feeId,
+        Long userId,
+        Integer amount,
+        LocalDateTime donatedAt
+) {}

@@ -1,15 +1,12 @@
 package org.example.volunteerback.model.donation;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.volunteerback.dto.DonationDTO;
 import org.example.volunteerback.model.fee.Fee;
 import org.example.volunteerback.model.user.User;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -37,6 +34,9 @@ public class Donation {
         this.fee = fee;
         this.user = user;
         this.amount = amount;
+    }
+
+    public Donation() {
     }
 
     @PrePersist
