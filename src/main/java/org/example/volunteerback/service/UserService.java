@@ -41,19 +41,15 @@ public class UserService {
     public ResponseEntity<Object> getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         UserDTO userDTO = user.map(userMapper::toDTO)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found "+id));
 
         return ResponseEntity.ok(userDTO);
     }
 
     public ResponseEntity<Object> patchUser(Long id, @Valid UserDTO updateDTO) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new MessageResponse("User not found"));
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new UsernameNotFoundException("User not found "+id));
 
-        User user = optionalUser.get();
         Optional.ofNullable(updateDTO.firstName()).ifPresent(user::setFirstName);
         Optional.ofNullable(updateDTO.lastName()).ifPresent(user::setLastName);
         Optional.ofNullable(updateDTO.photo()).ifPresent(user::setPhoto);
@@ -81,6 +77,9 @@ public class UserService {
 
     public ResponseEntity<Object> deleteUser(Long id)
     {
+        userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User with id " + id + " not found"));
+
         userRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new MessageResponse("User delete successfully"));

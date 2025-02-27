@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,39 +40,81 @@ class UserServiceTest {
     void getUserSuccessful() {
         Long id = 0L;
         User user = new User("Vova", "Kovach", "kovach@gmail.com", "12345678");
-        UserDTO userDTO = new UserDTO("Vova", "Kovach", "kovach@gmail.com", "12345678", "myPhoto", "Hi","0682590426");
+        UserDTO userDTO = new UserDTO("Vova", "Kovach", "kovach@gmail.com", "12345678", "myPhoto", "Hi", "0682590426");
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userMapper.toDTO(user)).thenReturn(userDTO);
 
         ResponseEntity<Object> response = userService.getUser(id);
 
-        assertEquals(HttpStatus.OK,response.getStatusCode());
-        assertEquals(userDTO,response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(userDTO, response.getBody());
     }
 
     @Test
-    void getUser_NotFoundUser()
-    {
+    void getUser_NotFoundUser() {
         Long id = 0L;
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
-        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class ,
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class,
                 () -> userService.getUser(id));
-        assertEquals("User not found", exception.getMessage());
+        assertEquals("User not found " + id, exception.getMessage());
     }
 
     @Test
-    void deleteUserSuccessful(){
+    void deleteUser_Successful() {
         Long id = 0L;
 
+        User user = new User("Vova", "Kovach", "kovach@gmail.com", "12345678");
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
         ResponseEntity<Object> response = userService.deleteUser(id);
 
         verify(userRepository).deleteById(id);
 
-        assertEquals(HttpStatus.OK,response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("User delete successfully", ((MessageResponse) Objects
                 .requireNonNull(response.getBody())).message());
     }
+
+    @Test
+    void deleteUser_UserNotFound() {
+        Long id = 0L;
+
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class,
+                () -> userService.deleteUser(id));
+
+        assertEquals("User with id " + id + " not found", exception.getMessage());
+    }
+
+    @Test
+    void patchUser_UserNotFound() {
+        Long id = 0L;
+
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class,
+                () -> userService.patchUser(id, null));
+
+        assertEquals("User not found " + id, exception.getMessage());
+    }
+
+    @Test
+    void patchUser_emailUseError() {
+        Long id = 0L;
+        User user = new User();
+        UserDTO userDTO = new UserDTO("Vova", "Kovach", "kovach@gmail.com", "12345678", "myPhoto", "Hi", "0682590426");
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmail("emailExists")).thenReturn(true);
+
+        var response = userService.patchUser(id, userDTO);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Email already in use", Objects.requireNonNull(response.getBody()).toString());
+
+    }
+
 
 }
