@@ -5,6 +5,7 @@ import org.example.volunteerback.dto.UserDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.mapper.UserMapper;
 import org.example.volunteerback.model.Role;
+import org.example.volunteerback.model.user.ERole;
 import org.example.volunteerback.model.user.User;
 import org.example.volunteerback.repository.RoleRepository;
 import org.example.volunteerback.repository.UserRepository;
@@ -89,12 +90,12 @@ public class UserService {
       Optional<User> optionalUser =  userRepository.findById(id);
       if (optionalUser.isPresent()){
           User userData= optionalUser.get();
-          Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                  .orElseThrow(() -> new RuntimeException("Role ADMIN not found"));
+          Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                  .orElseThrow(() -> new RuntimeException("ERole ADMIN not found"));
           userData.getRoles().add(adminRole);
           userRepository.save(userData);
       }
-      return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Role add successfully"));
+      return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("ERole add successfully"));
     }
 
 }

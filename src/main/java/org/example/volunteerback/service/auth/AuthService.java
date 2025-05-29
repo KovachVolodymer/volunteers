@@ -4,6 +4,7 @@ import org.example.volunteerback.config.jwt.JwtUtils;
 import org.example.volunteerback.dto.UserAuthDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.model.Role;
+import org.example.volunteerback.model.user.ERole;
 import org.example.volunteerback.model.user.User;
 import org.example.volunteerback.model.user.UserDetailsServiceImpl;
 import org.example.volunteerback.repository.RoleRepository;
@@ -53,11 +54,15 @@ public class AuthService {
                 passwordEncoder.encode(request.password())
         );
 
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Role USER not found"));
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("ERole USER not found"));
+
+
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
         user.setRoles(roles);
+
+
 
         userRepository.save(user);
 

@@ -37,4 +37,5 @@ public class Fee {
     @OneToMany(mappedBy = "fee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Donation> donations = new ArrayList<>();
 
+
 }

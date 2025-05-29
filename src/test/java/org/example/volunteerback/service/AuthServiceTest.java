@@ -3,6 +3,7 @@ package org.example.volunteerback.service;
 import org.example.volunteerback.dto.UserAuthDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.model.Role;
+import org.example.volunteerback.model.user.ERole;
 import org.example.volunteerback.model.user.User;
 import org.example.volunteerback.repository.RoleRepository;
 import org.example.volunteerback.repository.UserRepository;
@@ -57,8 +58,8 @@ class AuthServiceTest {
         when(userRepository.existsByEmail(request.email())).thenReturn(false);
 
         Role role = new Role();
-        role.setName("ROLE_USER");
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+        role.setName(ERole.ROLE_USER);
+        when(roleRepository.findByName(ERole.ROLE_USER)).thenReturn(Optional.of(role));
 
         when(passwordEncoder.encode(request.password())).thenReturn("encodedPassword");
 
@@ -92,10 +93,10 @@ class AuthServiceTest {
 
         when(userRepository.existsByEmail(request.email())).thenReturn(false);
 
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.empty());
+        when(roleRepository.findByName(ERole.ROLE_USER)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.register(request));
-        assertEquals("Role USER not found", exception.getMessage());
+        assertEquals("ERole USER not found", exception.getMessage());
     }
 
     @Test

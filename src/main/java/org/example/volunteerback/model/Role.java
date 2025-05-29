@@ -3,6 +3,7 @@ package org.example.volunteerback.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.volunteerback.model.user.ERole;
 import org.springframework.security.core.GrantedAuthority;
 
 @Getter
@@ -15,19 +16,20 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private String name;
+    private ERole name;
 
     public Role() {
     }
 
-    public Role(String name) {
+    public Role(ERole name) {
         this.name = name;
     }
 
     @Override
     public String getAuthority() {
-        return name;
+        return name.name();
     }
 
 }

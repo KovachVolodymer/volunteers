@@ -107,12 +107,13 @@ class UserServiceTest {
         User user = new User();
         UserDTO userDTO = new UserDTO("Vova", "Kovach", "kovach@gmail.com", "12345678", "myPhoto", "Hi", "0682590426");
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
-        when(userRepository.existsByEmail("emailExists")).thenReturn(true);
+        when(userRepository.existsByEmail("kovach@gmail.com")).thenReturn(true);
 
         var response = userService.patchUser(id, userDTO);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Email already in use", Objects.requireNonNull(response.getBody()).toString());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Email already in use", ((MessageResponse)Objects
+                .requireNonNull(response.getBody())).message());
 
     }
 
