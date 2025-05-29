@@ -1,7 +1,7 @@
 package org.example.volunteerback.service;
 
 import jakarta.validation.Valid;
-import org.example.volunteerback.dto.UserDTO;
+import org.example.volunteerback.dto.user.UserDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.mapper.UserMapper;
 import org.example.volunteerback.model.Role;
@@ -18,10 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {

@@ -1,8 +1,10 @@
 package org.example.volunteerback.service.auth;
 
 import org.example.volunteerback.config.jwt.JwtUtils;
-import org.example.volunteerback.dto.UserAuthDTO;
+import org.example.volunteerback.dto.user.UserAuthDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
+import org.example.volunteerback.exception.EmailAlreadyExistsException;
+import org.example.volunteerback.factory.UserFactory;
 import org.example.volunteerback.model.Role;
 import org.example.volunteerback.model.user.ERole;
 import org.example.volunteerback.model.user.User;
@@ -26,33 +28,28 @@ import java.util.Set;
 @Service
 public class AuthService {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final AuthenticationService authenticationService;
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserFactory userFactory;
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, AuthenticationService authenticationService, JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsServiceImpl) {
+    public AuthService(UserRepository userRepository, RoleRepository roleRepository, AuthenticationService authenticationService, JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsServiceImpl, UserFactory userFactory) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.authenticationService = authenticationService;
         this.jwtUtils = jwtUtils;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.userFactory = userFactory;
     }
 
     public ResponseEntity<Object> register(UserAuthDTO request) throws Exception {
-        if (userRepository.existsByEmail(request.email())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email exists"));
-        }
-        User user = new User(
-                request.firstName(),
-                request.lastName(),
-                request.email(),
-                passwordEncoder.encode(request.password())
-        );
+
+        validateEmail(request.email());
+
+        User user = userFactory.createUser(request);
 
         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("ERole USER not found"));
@@ -61,8 +58,6 @@ public class AuthService {
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
         user.setRoles(roles);
-
-
 
         userRepository.save(user);
 
@@ -75,6 +70,7 @@ public class AuthService {
                 ));
     }
 
+
     public ResponseEntity<Object> login(UserAuthDTO request) throws Exception {
         if (!userRepository.existsByEmail(request.email())) {
             return ResponseEntity
@@ -86,9 +82,9 @@ public class AuthService {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header(HttpHeaders.AUTHORIZATION, tokens.get("accessToken"))
                 .body(Map.of(
-                "message", "Login successful",
-                "refreshToken", tokens.get("refreshToken")
-        ));
+                        "message", "Login successful",
+                        "refreshToken", tokens.get("refreshToken")
+                ));
     }
 
     public ResponseEntity<Object> refresh(String refreshToken) {
@@ -106,10 +102,16 @@ public class AuthService {
                 ));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Invalid refresh token."+ e.getMessage()));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Invalid refresh token." + e.getMessage()));
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Token validation failed."));
+    }
+
+    private void validateEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 package org.example.volunteerback.mapper;
 
 import org.example.volunteerback.dto.FeeDTO;
-import org.example.volunteerback.dto.UserDTO;
+import org.example.volunteerback.dto.user.UserDTO;
 import org.example.volunteerback.model.fee.Fee;
 import org.example.volunteerback.model.user.User;
 import org.springframework.stereotype.Component;

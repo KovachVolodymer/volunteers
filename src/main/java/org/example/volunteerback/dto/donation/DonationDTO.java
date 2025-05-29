@@ -1,4 +1,4 @@
-package org.example.volunteerback.dto;
+package org.example.volunteerback.dto.donation;
 
 import java.time.LocalDateTime;
 

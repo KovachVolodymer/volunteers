@@ -1,5 +1,7 @@
 package org.example.volunteerback.dto;
 
+import org.example.volunteerback.dto.user.UserDTO;
+
 public record FeeDTO(
         UserDTO user,
         String title,

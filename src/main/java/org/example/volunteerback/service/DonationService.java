@@ -1,7 +1,7 @@
 package org.example.volunteerback.service;
 
-import org.example.volunteerback.dto.DonationDTO;
-import org.example.volunteerback.dto.DonationRequestDTO;
+import org.example.volunteerback.dto.donation.DonationDTO;
+import org.example.volunteerback.dto.donation.DonationRequestDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.mapper.DonationMapper;
 import org.example.volunteerback.model.donation.Donation;

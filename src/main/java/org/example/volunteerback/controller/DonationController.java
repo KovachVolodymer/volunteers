@@ -1,7 +1,7 @@
 package org.example.volunteerback.controller;
 
-import org.example.volunteerback.dto.DonationDTO;
-import org.example.volunteerback.dto.DonationRequestDTO;
+import org.example.volunteerback.dto.donation.DonationDTO;
+import org.example.volunteerback.dto.donation.DonationRequestDTO;
 import org.example.volunteerback.model.user.UserDetailsImpl;
 import org.example.volunteerback.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;

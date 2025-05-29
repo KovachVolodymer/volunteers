@@ -1,6 +1,6 @@
 package org.example.volunteerback.service;
 
-import org.example.volunteerback.dto.UserDTO;
+import org.example.volunteerback.dto.user.UserDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.mapper.UserMapper;
 import org.example.volunteerback.model.user.User;

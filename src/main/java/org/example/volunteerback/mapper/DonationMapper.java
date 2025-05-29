@@ -1,6 +1,6 @@
 package org.example.volunteerback.mapper;
 
-import org.example.volunteerback.dto.DonationDTO;
+import org.example.volunteerback.dto.donation.DonationDTO;
 import org.example.volunteerback.model.donation.Donation;
 import org.springframework.stereotype.Component;
 

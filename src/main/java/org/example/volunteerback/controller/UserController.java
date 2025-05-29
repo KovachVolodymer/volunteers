@@ -1,7 +1,7 @@
 package org.example.volunteerback.controller;
 
 import jakarta.validation.Valid;
-import org.example.volunteerback.dto.UserDTO;
+import org.example.volunteerback.dto.user.UserDTO;
 import org.example.volunteerback.model.user.UserDetailsImpl;
 import org.example.volunteerback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
