@@ -1,9 +1,12 @@
 package org.example.volunteerback.controller;
 
 import jakarta.validation.Valid;
+import org.example.volunteerback.dto.user.JwtTokenPair;
 import org.example.volunteerback.dto.user.UserAuthDTO;
 import org.example.volunteerback.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +25,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody @Valid UserAuthDTO userAuthDTO) throws Exception {
-        return authService.register(userAuthDTO);
+    public ResponseEntity<JwtTokenPair> register(@RequestBody @Valid UserAuthDTO userAuthDTO) throws Exception {
+        JwtTokenPair tokens = authService.register(userAuthDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header(HttpHeaders.AUTHORIZATION, tokens.accessToken())
+                .body(tokens);
     }
 
     @PostMapping("/login")

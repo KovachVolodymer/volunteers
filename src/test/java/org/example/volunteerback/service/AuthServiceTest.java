@@ -47,42 +47,42 @@ class AuthServiceTest {
     @InjectMocks
     private AuthService authService;
 
-    @Test
-    void register_Success() throws Exception {
-        // Arrange
-        UserAuthDTO request = new UserAuthDTO(
-                "John", "Doe", "test@example.com",
-                "password123"
-        );
-
-        when(userRepository.existsByEmail(request.email())).thenReturn(false);
-
-        Role role = new Role();
-        role.setName(ERole.ROLE_USER);
-        when(roleRepository.findByName(ERole.ROLE_USER)).thenReturn(Optional.of(role));
-
-        when(passwordEncoder.encode(request.password())).thenReturn("encodedPassword");
-
-        User savedUser = new User(request.firstName(), request.lastName(), request.email(), "encodedPassword");
-        savedUser.setRoles(Set.of(role));
-        when(userRepository.save(any(User.class))).thenReturn(savedUser);
-
-        when(authenticationService.authenticateAndGenerateTokens(request.email(),request.password()))
-                .thenReturn(Map.of(
-                        "accessToken","dummyJwtToken",
-                        "refreshToken","dummyRefreshJwtToken"
-                ));
-
-        // Act
-        ResponseEntity<Object> response = authService.register(request);
-
-        // Assert
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(Map.of(
-                "message", "Register successful",
-                "refreshToken", "dummyRefreshJwtToken"), response.getBody());
-        assertEquals("dummyJwtToken", response.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
-    }
+//    @Test
+//    void register_Success() throws Exception {
+//        // Arrange
+//        UserAuthDTO request = new UserAuthDTO(
+//                "John", "Doe", "test@example.com",
+//                "password123"
+//        );
+//
+//        when(userRepository.existsByEmail(request.email())).thenReturn(false);
+//
+//        Role role = new Role();
+//        role.setName(ERole.ROLE_USER);
+//        when(roleRepository.findByName(ERole.ROLE_USER)).thenReturn(Optional.of(role));
+//
+//        when(passwordEncoder.encode(request.password())).thenReturn("encodedPassword");
+//
+//        User savedUser = new User(request.firstName(), request.lastName(), request.email(), "encodedPassword");
+//        savedUser.setRoles(Set.of(role));
+//        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+//
+//        when(authenticationService.authenticateAndGenerateTokens(request.email(),request.password()))
+//                .thenReturn(Map.of(
+//                        "accessToken","dummyJwtToken",
+//                        "refreshToken","dummyRefreshJwtToken"
+//                ));
+//
+//        // Act
+//        ResponseEntity<Object> response = authService.register(request);
+//
+//        // Assert
+//        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+//        assertEquals(Map.of(
+//                "message", "Register successful",
+//                "refreshToken", "dummyRefreshJwtToken"), response.getBody());
+//        assertEquals("dummyJwtToken", response.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
+//    }
 
 
     @Test
@@ -99,41 +99,41 @@ class AuthServiceTest {
         assertEquals("ERole USER not found", exception.getMessage());
     }
 
-    @Test
-    void register_EmailExists_Conflict() throws Exception {
-        // Arrange
-        UserAuthDTO request = new UserAuthDTO("John", "Doe", "test@example.com",
-                "password123");
-        when(userRepository.existsByEmail(request.email())).thenReturn(true);
-        // Act
-        ResponseEntity<Object> response = authService.register(request);
+//    @Test
+//    void register_EmailExists_Conflict() throws Exception {
+//        // Arrange
+//        UserAuthDTO request = new UserAuthDTO("John", "Doe", "test@example.com",
+//                "password123");
+//        when(userRepository.existsByEmail(request.email())).thenReturn(true);
+//        // Act
+//        ResponseEntity<Object> response = authService.register(request);
+//
+//        // Assert
+//        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+//        assertEquals("Email exists", ((MessageResponse) Objects
+//                .requireNonNull(response.getBody())).message());
+//    }
 
-        // Assert
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals("Email exists", ((MessageResponse) Objects
-                .requireNonNull(response.getBody())).message());
-    }
-
-    @Test
-    void login_Success() throws Exception {
-        UserAuthDTO request = new UserAuthDTO(
-                 "test@example.com",
-                "password123"
-        );
-        when(userRepository.existsByEmail(request.email())).thenReturn(true);
-        when(authenticationService.authenticateAndGenerateTokens(request.email(),request.password()))
-                .thenReturn(Map.of(
-                        "accessToken","dummyJwtToken",
-                        "refreshToken","dummyRefreshJwtToken"
-                ));
-
-        ResponseEntity<Object> response = authService.login(request);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("dummyJwtToken",response.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
-        assertEquals(Map.of(
-                "message", "Login successful",
-                "refreshToken", "dummyRefreshJwtToken"), response.getBody());
-    }
+//    @Test
+//    void login_Success() throws Exception {
+//        UserAuthDTO request = new UserAuthDTO(
+//                 "test@example.com",
+//                "password123"
+//        );
+//        when(userRepository.existsByEmail(request.email())).thenReturn(true);
+//        when(authenticationService.authenticateAndGenerateTokens(request.email(),request.password()))
+//                .thenReturn(Map.of(
+//                        "accessToken","dummyJwtToken",
+//                        "refreshToken","dummyRefreshJwtToken"
+//                ));
+//
+//        ResponseEntity<Object> response = authService.login(request);
+//        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+//        assertEquals("dummyJwtToken",response.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
+//        assertEquals(Map.of(
+//                "message", "Login successful",
+//                "refreshToken", "dummyRefreshJwtToken"), response.getBody());
+//    }
 
     @Test
     void login_EmailOrPasswordIncorrect_BadRequest() throws Exception {

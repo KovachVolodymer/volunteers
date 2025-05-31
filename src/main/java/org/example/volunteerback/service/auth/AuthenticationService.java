@@ -1,6 +1,7 @@
 package org.example.volunteerback.service.auth;
 
 import org.example.volunteerback.config.jwt.JwtUtils;
+import org.example.volunteerback.dto.user.JwtTokenPair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,7 +22,7 @@ public class AuthenticationService {
         this.jwtUtils = jwtUtils;
     }
 
-    public Map<String, String> authenticateAndGenerateTokens(String email, String password) throws Exception {
+    public JwtTokenPair authenticateAndGenerateTokens(String email, String password) throws Exception {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -29,10 +30,8 @@ public class AuthenticationService {
         String accessToken = jwtUtils.generateJwtToken(authentication);
         String refreshToken = jwtUtils.generateRefreshToken(authentication);
 
-        return Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken
-        );
+
+        return new JwtTokenPair(accessToken, refreshToken);
     }
 }
 

@@ -1,6 +1,7 @@
 package org.example.volunteerback.service.auth;
 
 import org.example.volunteerback.config.jwt.JwtUtils;
+import org.example.volunteerback.dto.user.JwtTokenPair;
 import org.example.volunteerback.dto.user.UserAuthDTO;
 import org.example.volunteerback.dto.response.MessageResponse;
 import org.example.volunteerback.exception.EmailAlreadyExistsException;
@@ -45,7 +46,7 @@ public class AuthService {
         this.userFactory = userFactory;
     }
 
-    public ResponseEntity<Object> register(UserAuthDTO request) throws Exception {
+    public JwtTokenPair register(UserAuthDTO request) throws Exception {
 
         validateEmail(request.email());
 
@@ -61,13 +62,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        Map<String, String> tokens = authenticationService.authenticateAndGenerateTokens(request.email(), request.password());
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .header(HttpHeaders.AUTHORIZATION, tokens.get("accessToken"))
-                .body(Map.of(
-                        "message", "Register successful",
-                        "refreshToken", tokens.get("refreshToken")
-                ));
+        return authenticationService.authenticateAndGenerateTokens(request.email(), request.password());
     }
 
 
@@ -78,12 +73,12 @@ public class AuthService {
                     .body(new MessageResponse("Email or password is incorrect!"));
         }
 
-        Map<String, String> tokens = authenticationService.authenticateAndGenerateTokens(request.email(), request.password());
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .header(HttpHeaders.AUTHORIZATION, tokens.get("accessToken"))
+        JwtTokenPair tokens = authenticationService.authenticateAndGenerateTokens(request.email(), request.password());
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.AUTHORIZATION, tokens.accessToken())
                 .body(Map.of(
-                        "message", "Login successful",
-                        "refreshToken", tokens.get("refreshToken")
+                        "message", "Register successful",
+                        "refreshToken", tokens.refreshToken()
                 ));
     }
 
